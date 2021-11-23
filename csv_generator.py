@@ -6,5 +6,3 @@ from billboard100_scrapper import billboard100_scrapper
 
 output = billboard100_scrapper()
 output.to_csv(path_or_buf = "Data/billboard100.csv")
-
-print("Hello")
