@@ -1,15 +1,19 @@
 import numpy as np
 
 
-def hot_recommender(hot_songs):
+def hot_recommender(songs_data):
     
-    user_song = input("Please enter the name of one song you love: ").lower()
+    songs = np.array(songs_data["song"])
+    artists = np.array(songs_data["artist"])
+    user_song = input("Please enter the name of one hot song you love: ").lower()
     
-    if user_song in hot_songs:
+    if user_song in songs:
         
-        recommended_song = np.random.choice(hot_songs).title()
+        recommended_song = np.random.choice(songs).title()
+        index = np.where(songs == recommended_song.lower())
+        recommended_artist = artists[index[0][0]].title()
         
-        print(f'We think "{recommended_song}" will like you. Check it out!')
+        print(f'We think "{recommended_song}" from  "{recommended_artist}" will like you. Check it out!')
         
     else:
         
