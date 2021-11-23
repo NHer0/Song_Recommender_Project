@@ -44,6 +44,6 @@ def billboard100_scrapper():
             res.append(lst_clean[1:-3])
 
             
-    output = pd.DataFrame(res, index = range(1,101), columns=["song", "artist", "last_week", "peak_pos", "n_weeks"]) # output DataFrame
+    output = pd.DataFrame(res, columns=["song", "artist", "last_week", "peak_pos", "n_weeks"]) # output DataFrame
 
     return output
