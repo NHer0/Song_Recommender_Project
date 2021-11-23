@@ -10,7 +10,7 @@ url_billboard = "https://www.billboard.com/charts/hot-100"
 
 # Billboard 100 Scrapping Function
 
-def billboard100_scrapper(url_billboard):
+def billboard100_scrapper():
 
     res = []
     columns = ["song", "artist", "last_week", "peak_pos", "n_weeks"]
