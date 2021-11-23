@@ -2,7 +2,7 @@
 
 from bs4 import BeautifulSoup
 import requests
-import pandas as pd
+from hot_recommender import hot_recommender
 
 # Billboard url
 
