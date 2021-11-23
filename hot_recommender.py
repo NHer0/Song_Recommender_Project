@@ -10,10 +10,17 @@ def hot_recommender(songs_data):
     if user_song in songs:
         
         recommended_song = np.random.choice(songs).title()
-        index = np.where(songs == recommended_song.lower())
-        recommended_artist = artists[index[0][0]].title()
+        index = np.where(songs == recommended_song.lower())[0]
+
+        if len(index) == 1:
+
+            recommended_artist = artists[index[0]].title()
+
+        else:
+
+            recommended_artist = artists[np.random.choice(index)].title()
         
-        print(f'We think "{recommended_song}" from  "{recommended_artist}" will like you. Check it out!')
+        print(f'We think "{recommended_song}" from "{recommended_artist}" will like you. Check it out!')
         
     else:
         
