@@ -88,7 +88,7 @@ def get_audio_features_artists_db(artist_list):
             
             output_list.append(row)
 
-        wait_time = randint(1, 8)/10
+        wait_time = randint(1, 15)/10
         sleep(wait_time)
 
     output = pd.DataFrame(output_list, columns=columns_names)
