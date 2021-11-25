@@ -45,5 +45,6 @@ def billboard100_scrapper():
 
             
     output = pd.DataFrame(res, columns=["song", "artist", "last_week", "peak_pos", "n_weeks"]) # output DataFrame
+    output["source"] = "billboard100"
 
     return output
