@@ -17,4 +17,4 @@ except FileNotFoundError:
 
 
 # First Prototype, only hot recommender
-hr.hot_recommender_v2(billboard100)
+hr.hot_recommender_v3(billboard100)
