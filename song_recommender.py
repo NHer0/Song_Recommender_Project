@@ -184,6 +184,13 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
     match = False
     on = True
 
+    # Welcoming the user
+
+    print("Welcome to Gnod Song Recommender - Developer Environment. Please bear in mind this is a beta version.")
+    print("--------------------------")
+
+    time.sleep(0.75)
+
     while on:
 
         audio_f_list = []
@@ -225,18 +232,20 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
 
             recommended_song = np.random.choice(hot_songs).title()
             recommended_id = sp_api.sp.search(q=recommended_song, type="track", limit=1, market="US")["tracks"]["items"][0]["id"]
-            index = np.where(hot_songs == recommended_song.lower())[0]
+            recommended_index = np.where(hot_songs == recommended_song.lower())[0]
 
-            if len(index) == 1:
+            if len(recommended_index) == 1:
 
-                recommended_artist = hot_artists[index[0]].title()
+                recommended_artist = hot_artists[recommended_index[0]].title()
 
             else:
 
-                recommended_artist = hot_artists[np.random.choice(index)].title()
+                recommended_artist = hot_artists[np.random.choice(recommended_index)].title()
 
+            user_index = np.where(hot_songs == user_song.lower())[0]
+            user_artist = hot_artists[user_index[0]].title()
+            print(f'Your song: {user_song.title()} / {user_artist}')
             print(f'You are into hot songs! We think "{recommended_song}" from "{recommended_artist}" will like you. Check it out!')
-            print(f'Your song ")
             print("--------------------------")
             player = sp_api.spotify_player(recommended_id)
             IPython.display.display(player)
@@ -256,6 +265,7 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
         try:
 
             user_song_id = sp_api.sp.search(q=user_song, type="track", limit=1, market="US")["tracks"]["items"][0]["id"]
+            user_artist = sp_api.sp.search(q=user_song, type="track", limit=1, market="US")["tracks"]["items"][0]["artists"][0]["name"]
 
         except IndexError:
 
@@ -294,12 +304,14 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
             recommendation_artist = recommendation["artist"].iloc[0]
             recommendation_id = recommendation["song_id"].iloc[0]
 
+            print(f'Your song: {user_song.title()} / {user_artist.title()}')
             print(f'Based on the song features we think "{recommendation_song}" from "{recommendation_artist}" will like you. Check it out!')
             print("--------------------------")
             player = sp_api.spotify_player(recommendation_id)
             IPython.display.display(player)
             print("--------------------------")
 
+        time.sleep(0.75)
         cont = input("Do you want another recommendation? ").lower()
         print("--------------------------")
 
