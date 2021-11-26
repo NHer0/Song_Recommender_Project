@@ -8,6 +8,7 @@ import pandas as pd
 from time import sleep
 from random import randint
 from tqdm import tqdm
+from IPython.display import IFrame
 
 # Initialize SpotPy with user credentials
 
@@ -42,6 +43,17 @@ def get_artists_ids_from_playlist(username, playlist_id):
     tracks_from_playlist = get_playlist_tracks(username, playlist_id)
     return list(set(artist for subset in [get_artists_ids_from_track(track["track"]) for track in tracks_from_playlist] for artist in subset))
 
+
+def spotify_player(song_id):
+    track_id = song_id
+    player = IFrame(src=f"https://open.spotify.com/embed/track/{track_id}",
+             width="320",
+             height="80",
+             frameborder="0",
+             allowtransparency="true",
+             allow="encrypted-media",
+            )
+    return player
 
 def get_audio_features_artists_db(artist_list):
 
