@@ -3,6 +3,8 @@
 import numpy as np
 import jaro
 import time
+import pandas as pd
+import IPython.display
 import spotify_api as sp_api
 #
 
@@ -172,6 +174,11 @@ def hot_recommender_v3(songs_data):
 
 def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
 
+    columns_names = ['danceability', 'energy', 'key', 'loudness',
+                     'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness',
+                     'valence', 'tempo'
+                     ]
+
     hot_songs = np.array(hot_songs_db["song"])
     hot_artists = np.array(hot_songs_db["artist"])
     match = False
@@ -180,6 +187,7 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
     while on:
 
         audio_f_list = []
+        row = []
         match = False
         feat = True
 
@@ -200,7 +208,7 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
 
                 else:
 
-                    answer_typo = input(f'Do you mean "{user_song}"?')
+                    answer_typo = input(f'Do you mean "{user_song}"? ')
                     print("--------------------------")
 
                     if answer_typo in ["yes", "y"]:
@@ -216,6 +224,7 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
         if match:
 
             recommended_song = np.random.choice(hot_songs).title()
+            recommended_id = sp_api.sp.search(q=recommended_song, type="track", limit=1, market="US")["tracks"]["items"][0]["id"]
             index = np.where(hot_songs == recommended_song.lower())[0]
 
             if len(index) == 1:
@@ -227,9 +236,13 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
                 recommended_artist = hot_artists[np.random.choice(index)].title()
 
             print(f'You are into hot songs! We think "{recommended_song}" from "{recommended_artist}" will like you. Check it out!')
-            print()
+            print(f'Your song ")
+            print("--------------------------")
+            player = sp_api.spotify_player(recommended_id)
+            IPython.display.display(player)
+            print("--------------------------")
             feat_ans = input(f'Are you not satisfied with the hot song recommendation? '
-                             f'Do you wanna try our amazing song featured based recommender? .')
+                             f'Do you wanna try our amazing song featured based recommender? ')
             print("--------------------------")
 
             if feat_ans in ["yes", "y"]:
@@ -239,8 +252,6 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
             else:
 
                 pass
-
-            print("--------------------------")
 
         try:
 
@@ -264,7 +275,7 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
 
                 user_song_id = sp_api.sp.search(q=user_song, type="track", limit=1, market="US")["tracks"]["items"][0]["id"]
 
-        if (not match):
+        if not match:
 
             audio_f = sp_api.sp.audio_features(user_song_id)
 
@@ -273,16 +284,22 @@ def song_recommender(hot_songs_db, songs_db, kmeans_model, scaler):
                 key = list(audio_f[0].keys())[k]
                 audio_f_list.append(audio_f[0][key])
 
-            audio_f_scaled = scaler.transform(np.array(audio_f_list).reshape(1, -1))
-            user_song_cluster = kmeans_model.predict(audio_f_scaled)
+            row.append(audio_f_list)
+            audio_f_df = pd.DataFrame(row, columns=columns_names)
+            X_scaled = scaler.transform(audio_f_df)
+            audio_f_scaled_df = pd.DataFrame(X_scaled, columns=columns_names)
+            user_song_cluster = kmeans_model.predict(audio_f_scaled_df)
             recommendation = songs_db[songs_db["cluster"] == user_song_cluster[0]].sample()
             recommendation_song = recommendation["song_name"].iloc[0]
             recommendation_artist = recommendation["artist"].iloc[0]
+            recommendation_id = recommendation["song_id"].iloc[0]
 
             print(f'Based on the song features we think "{recommendation_song}" from "{recommendation_artist}" will like you. Check it out!')
             print("--------------------------")
+            player = sp_api.spotify_player(recommendation_id)
+            IPython.display.display(player)
+            print("--------------------------")
 
-        time.sleep(1)
         cont = input("Do you want another recommendation? ").lower()
         print("--------------------------")
 
