@@ -18,3 +18,7 @@ This first prototype only includes the hot song recommender. The  flow chart of 
 The second and final prototype includes the hot song recommender and the audio features based recommender. The flow chart of the programm is as in image below.
 
 ![2nd_Prototype_Img](Images/2nd_Prototype.png)
+
+The modelling (kmeans clustering) process is detailed in image below.
+
+![clustering_img](Images/Clustering.png)
